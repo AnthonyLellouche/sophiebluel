@@ -263,7 +263,7 @@ footer nav ul {
   margin: 2em;
 }
 
-/* Modifications */
+/*Modifications*/
 
 #filter {
   display: flex;
@@ -338,3 +338,9 @@ a {
   justify-content: center;
   color: black;
 }
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  right: 25%;
+  }
