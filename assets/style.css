@@ -343,4 +343,42 @@ a {
   position: fixed;
   bottom: 0;
   right: 25%;
-  }
+}
+
+.edit-mode-banner {
+  display: none;
+  background-color: black;
+  color: white;
+  padding: 12px;
+  font-size: 17px;
+  text-align: center;
+  position: absolute;
+  justify-content: center;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+#modifier {
+  display: none;
+}
+
+#logout-link {
+  display: none;
+}
+
+.title {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+}
+
+.title li {
+  padding-top: 10px;
+  list-style: none;
+}
+
+.title a {
+  text-decoration: none;
+}

@@ -29,12 +29,13 @@
       <section id="login">
         <h2>Log In</h2>
         <form action="#" method="post">
-          <label for="email">Email</label>
+          <label for="email">E-mail</label>
           <input type="email" name="email" id="email" />
           <label for="password">Mot de passe</label>
           <input type="password" name="password" id="password" />
-          <input type="login" value="Se connecter" />
-          <a href="/#"><p>Mot de passe oublié</p></a>
+          <input type="submit" value="Se connecter" />
+          <p id="error-message"></p>
+          <a href="/#"><p>Mot de passe oubliéé</p></a>
         </form>
       </section>
     </main>
@@ -46,6 +47,6 @@
         </ul>
       </nav>
     </footer>
-    <script src="./assets/script.js"></script>
+    <script src="./js/login.js" defer></script>
   </body>
 </html>

@@ -1,5 +1,6 @@
 const apiUrl = "http://localhost:5678/api";
 
+//chgt des projets
 async function chargerProjets(categorie = "Tous") {
   try {
     const url = `${apiUrl}/works`;
@@ -36,6 +37,7 @@ async function chargerProjets(categorie = "Tous") {
   }
 }
 
+//chgt categorie
 async function chargerCategories() {
   try {
     const url = `${apiUrl}/categories`;
@@ -72,15 +74,51 @@ async function chargerCategories() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  chargerProjets();
-  chargerCategories();
+//login logout
+function toggleLoginLogout() {
+  const loginLink = document.getElementById('login-link');
+  const logoutLink = document.getElementById('logout-link');
+  const editModeBanner = document.getElementById('edit-mode-banner');
+  const modif = document.getElementById('modifier');
+  const filterContainer = document.getElementById('filter');
 
-  const filterButtons = document.querySelectorAll(".filter-button");
-  filterButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const categorieSelectionnee = button.dataset.category;
-      chargerProjets(categorieSelectionnee);
-    });
-  });
+  if (loginLink && logoutLink) {
+    const authToken = sessionStorage.getItem('authToken');
+    if (authToken) {
+      loginLink.style.display = 'none';
+      logoutLink.style.display = 'block';
+      if (editModeBanner && modif) {
+        editModeBanner.style.display = 'flex';
+        modif.style.display = 'flex';
+      }
+      filterContainer.style.display = 'none';
+    } else {
+      loginLink.style.display = 'block';
+      logoutLink.style.display = 'none';
+      if (editModeBanner && modif) {
+        editModeBanner.style.display = 'none';
+        modif.style.display = 'none';
+      }
+      filterContainer.style.display = 'flex';
+    }
+  }
+}
+
+//ecouteurs d'evenement
+document.addEventListener("DOMContentLoaded", () => {
+  if (document.querySelector(".gallery")) {
+    chargerProjets();
+    chargerCategories();
+    toggleLoginLogout();
+  }
 });
+
+//logout avec suppression utilisateur du local storage
+const logoutLink = document.getElementById('logout-link');
+if (logoutLink) {
+  logoutLink.addEventListener('click', (event) => {
+    event.preventDefault();
+    sessionStorage.removeItem('authToken');
+    window.location.href = '/FrontEnd';
+  });
+}
