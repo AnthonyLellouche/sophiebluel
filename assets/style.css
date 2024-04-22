@@ -176,6 +176,7 @@ nav li {
 
 li:hover {
   color: #b1663c;
+  cursor: pointer;
 }
 #introduction {
   display: flex;
@@ -362,6 +363,15 @@ a {
 
 #modifier {
   display: none;
+  border: none;
+  background-color: transparent;
+  padding-top: 10px;
+  gap: 10px;
+  cursor: pointer;
+}
+
+#modifier:hover {
+  color: #b1663c;
 }
 
 #logout-link {
@@ -374,11 +384,118 @@ a {
   gap: 25px;
 }
 
-.title li {
-  padding-top: 10px;
-  list-style: none;
-}
-
 .title a {
   text-decoration: none;
+}
+
+li a:hover {
+  color: #b1663c;
+}
+
+/* MODAL */
+
+.modal-overlay {
+  background: rgba(0, 0, 0, 0.7);
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.modal-wrapper {
+  width: 650px;
+  height: 750px;
+  background: white;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 2%;
+}
+
+.close-modal-btn {
+  padding: 8px;
+  margin-left: auto;
+  margin-top: 15px;
+  margin-right: 15px;
+  font-size: large;
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+}
+
+.close-btn-wrapper {
+  display: flex;
+}
+
+.modal-content {
+  margin: 30px auto;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  font-size: 1.3rem;
+}
+
+.hide {
+  display: none;
+}
+
+.modal-gallery figure {
+  display: inline-block;
+  margin: 5px;
+  width: 100px; 
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-gallery img {
+  width: 100%; 
+  height: auto;
+}
+
+.modal-gallery {
+  padding-left: 50px;
+}
+
+hr {
+  width: 80%;
+  size: 1;
+  margin-top: 50px;
+  margin-bottom: 40px;
+}
+
+.add-picture {
+  font-family: "Syne";
+  font-size: 1rem;
+  border-radius: 20px;
+  padding: 10px 45px;
+  background-color: #1d6154;;
+  gap: 20px;
+  cursor: pointer;
+  color: white;
+  display: flex;
+}
+.button-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Bouton supprimer */
+
+.delete-button {
+  border: none;
+  background-color: black;
+  color: white;
+  font-size: 20px;
+  border-radius: 10%;
+  cursor: pointer;
+}
+
+.delete-button button {
+  background-color: red;
+
 }

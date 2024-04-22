@@ -1,7 +1,7 @@
 const apiUrl = "http://localhost:5678/api";
 
 //chgt des projets
-async function chargerProjets(categorie = "Tous") {
+async function chargerProjets(categorie = "Tous", targetElement = ".gallery", afficherLegende = true, afficherBoutonSupprimer = false) {
   try {
     const url = `${apiUrl}/works`;
     const reponse = await fetch(url);
@@ -10,32 +10,43 @@ async function chargerProjets(categorie = "Tous") {
     }
     const projets = await reponse.json();
 
-    let projetsFiltres = projets;
-    if (categorie !== "Tous") {
-      projetsFiltres = projets.filter(
-        (projet) => projet.category.name === categorie
-      );
-    }
+    let projetsFiltres = (categorie !== "Tous") ? projets.filter(projet => projet.category.name === categorie) : projets;
 
-    const galerie = document.querySelector(".gallery");
+    const galerie = document.querySelector(targetElement);
     galerie.innerHTML = "";
 
     projetsFiltres.forEach((projet) => {
       const figure = document.createElement("figure");
+      figure.setAttribute('data-id', projet.id);
       const img = document.createElement("img");
       img.src = projet.imageUrl;
       img.alt = projet.title;
-      const figcaption = document.createElement("figcaption");
-      figcaption.textContent = projet.title;
-
       figure.appendChild(img);
-      figure.appendChild(figcaption);
+
+      if (afficherLegende) {
+        const figcaption = document.createElement("figcaption");
+        figcaption.textContent = projet.title;
+        figure.appendChild(figcaption);
+      }
+
+      if (afficherBoutonSupprimer) {
+        const btnSupprimer = document.createElement("button");
+        btnSupprimer.classList.add("delete-button");
+        const icon = document.createElement("i");
+        icon.className = "fa-solid fa-trash-can";
+        btnSupprimer.appendChild(icon)
+        btnSupprimer.onclick = function () {
+          supprimerProjet(projet.id);
+        };
+        figure.appendChild(btnSupprimer);
+      }
       galerie.appendChild(figure);
     });
   } catch (error) {
-    console.log("erreur ds le chgt du projet", error);
+    console.log("Erreur dans le chargement des projets", error);
   }
 }
+
 
 //chgt categorie
 async function chargerCategories() {
@@ -119,6 +130,65 @@ if (logoutLink) {
   logoutLink.addEventListener('click', (event) => {
     event.preventDefault();
     sessionStorage.removeItem('authToken');
-    window.location.href = '/FrontEnd';
+    window.location.href = 'index.html';
+  });
+}
+
+//modal
+
+const openBtn = document.querySelector("#modifier");
+const modal = document.querySelector(".modal-overlay");
+const closeBtn = document.querySelector(".close-modal-btn");
+
+function openModal() {
+  modal.classList.remove("hide");
+}
+
+function closeModal(e, clickedOutside = false) {
+  if (clickedOutside) {
+    if (e.target.classList.contains("modal-overlay"))
+      modal.classList.add("hide");
+  } else modal.classList.add("hide");
+}
+
+openBtn.addEventListener("click", openModal);
+modal.addEventListener("click", (e) => closeModal(e, true));
+closeBtn.addEventListener("click", closeModal);
+
+openBtn.addEventListener("click", () => {
+  openModal();
+  chargerProjets("Tous", ".modal-gallery", false, true);
+  console.log(chargerProjets);
+});
+
+window.addEventListener('keydown', function (e) {
+  if (e.key === "Escape" || e.key === "Esc") {
+    closeModal(e)
+  }
+})
+
+//suppresion projet 
+
+function supprimerProjet(projetId) {
+  const token = sessionStorage.getItem('authToken')
+  if (!confirm("Êtes-vous sûr de vouloir supprimer ce projet ?")) {
+    return;
+  }
+
+  fetch(`${apiUrl}/works/${projetId}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  }).then(response => {
+    if (response.ok) {
+      console.log('Projet supprimé avec succès');
+      const elementsASupprimer = document.querySelectorAll(`figure[data-id="${projetId}"]`);
+      elementsASupprimer.forEach(el => el.remove());
+    } else {
+      throw new Error(`Erreur HTTP: ${response.status}`);
+    }
+  }).catch(error => {
+    console.error('Erreur lors de la suppression du projet', error);
   });
 }

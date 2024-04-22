@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 })
                 .then(data => {
                     sessionStorage.setItem('authToken', data.token);
-                    window.location.href = '/FrontEnd';
+                    window.location.href = 'index.html';
                 })
                 .catch(error => {
                     console.error('Erreur:', error);
