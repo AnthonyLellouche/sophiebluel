@@ -1,4 +1,4 @@
-const apiUrl = "http://localhost:5678/api";
+import { apiUrl } from './config.js'
 
 //page de co
 document.addEventListener("DOMContentLoaded", function () {
