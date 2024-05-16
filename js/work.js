@@ -162,7 +162,7 @@ export async function ajoutProjet() {
             formData.append('image', newProject.photo);
             formData.append('category', newProject.category.id);
 
-            console.log('Données envoyées à l\'API:', formData);
+            // console.log('Données envoyées à l\'API:', formData);
             const response = await fetch(`${apiUrl}/works`, {
                 method: 'POST',
                 headers: {
@@ -177,7 +177,7 @@ export async function ajoutProjet() {
 
             const responseData = await response.json();
             images.push(responseData);
-            console.log('Projet ajouté:', responseData);
+            console.log('Projet ajoutée');
             chargerProjets();
             fermerModal();
         } else {
