@@ -1,14 +1,20 @@
-import { apiUrl } from './config.js'
+import { apiUrl } from './config.js';
+
+let images = [];
 
 //chgt des projets
 export async function chargerProjets(categorie = "Tous", targetElement = ".gallery", afficherLegende = true, afficherBoutonSupprimer = false) {
     try {
-        const url = `${apiUrl}/works`;
-        const reponse = await fetch(url);
-        if (!reponse.ok) {
-            throw new Error(`Erreur HTTP: ${reponse.status}`);
+        let projets = images;
+        if (images.length === 0) {
+            const url = `${apiUrl}/works`;
+            const reponse = await fetch(url);
+            if (!reponse.ok) {
+                throw new Error(`Erreur HTTP: ${reponse.status}`);
+            }
+            projets = await reponse.json();
+            images = projets;
         }
-        const projets = await reponse.json();
 
         let projetsFiltres = (categorie !== "Tous") ? projets.filter(projet => projet.category.name === categorie) : projets;
 
@@ -137,36 +143,54 @@ affichageCategorieForm();
 
 //ajout projet 
 export async function ajoutProjet() {
-    const token = sessionStorage.getItem('authToken');
-    const photo = document.getElementById("imageUrl").files[0];
-    const title = document.querySelector("input[name='title']").value;
-    const category = document.querySelector("select[name='category.name']").value;
-
-    const formData = new FormData();
-    formData.append('image', photo);
-    formData.append('title', title);
-    formData.append('category', category);
-
     try {
-        const response = await fetch(`${apiUrl}/works`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            },
-            body: formData
-        });
+        const token = sessionStorage.getItem('authToken');
+        const photo = document.getElementById("imageUrl").files[0];
+        const title = document.querySelector("input[name='title']").value;
+        const category = document.querySelector("select[name='category.name']").value;
 
-        if (response.ok) {
-            const data = await response.json();
-            console.log('Projet ajouté avec succès', data);
+        const newProject = {
+            title: title,
+            imageUrl: URL.createObjectURL(photo),
+            photo: photo,
+            category: { id: category, name: document.querySelector(`select[name='category.name'] option[value='${category}']`).textContent }
+        };
+
+        if (isValidProject(newProject)) {
+            const formData = new FormData();
+            formData.append('title', newProject.title);
+            formData.append('image', newProject.photo);
+            formData.append('category', newProject.category.id);
+
+            console.log('Données envoyées à l\'API:', formData);
+            const response = await fetch(`${apiUrl}/works`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const responseData = await response.json();
+            images.push(responseData);
+            console.log('Projet ajouté:', responseData);
             chargerProjets();
             fermerModal();
         } else {
-            throw new Error(`Erreur HTTP: ${response.status}`);
+            console.error('Le projet nest pas ok');
         }
     } catch (error) {
         console.error('Erreur lors de l’envoi du projet:', error);
     }
+}
+
+//fonction si projet ok
+function isValidProject(project) {
+    return project && project.imageUrl && project.title && project.photo && project.category && project.category.id && project.category.name;
 }
 
 document.addEventListener('DOMContentLoaded', function () {
