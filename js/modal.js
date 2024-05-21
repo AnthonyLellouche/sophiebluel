@@ -1,44 +1,63 @@
-// Sélecteur pour les modale et les boutons
-const firstModal = document.querySelector(".modal-overlay");
-const secondModal = document.querySelector(".new-modal");
-const openFirstModalBtn = document.querySelector("#openModalAjout");
-const closeFirstModalBtn = firstModal.querySelector(".close-modal-btn");
-const closeSecondModalBtn = secondModal.querySelector(".close-modal-btn");
-const backArrowBtn = secondModal.querySelector(".arrow-modal-btn");
+// selecteur pour les modale et les boutons
+const modals = {
+  firstModal: document.querySelector(".modal-overlay"),
+  secondModal: document.querySelector(".new-modal")
+};
 
-// Ouv 1 er modal
-openFirstModalBtn.addEventListener("click", () => {
-  firstModal.classList.remove("hide");
+const buttons = {
+  openFirstModalBtn: document.querySelector("#openModalAjout"),
+  closeFirstModalBtn: modals.firstModal.querySelector(".close-modal-btn"),
+  closeSecondModalBtn: modals.secondModal.querySelector(".close-modal-btn"),
+  backArrowBtn: modals.secondModal.querySelector(".arrow-modal-btn")
+};
+
+// fonction pour ouvrir une modal spécifique
+export function openModal(modal) {
+  modal.classList.remove("hide");
+}
+
+//fonction pour fermer une modal réinitialisation form
+export function closeModal(modal, resetFormId = null) {
+  modal.classList.add("hide");
+  if (resetFormId) {
+    resetForm(resetFormId);
+  }
+}
+
+// Reinit form
+function resetForm(formId) {
+  const form = document.getElementById(formId);
+  form.reset();
+  document.getElementById('preview-image').style.display = 'none';
+  document.querySelector('.fa-regular.fa-image').classList.remove('hidden');
+  document.querySelector('.btnAjout').classList.remove('hidden');
+  document.querySelector('.labelFormat').classList.remove('hidden');
+}
+
+// Event pour les boutons
+buttons.openFirstModalBtn.addEventListener("click", () => {
+  openModal(modals.firstModal);
 });
 
-// Ferm de la 1ere modale
-closeFirstModalBtn.addEventListener("click", () => {
-  firstModal.classList.add("hide");
+buttons.closeFirstModalBtn.addEventListener("click", () => {
+  closeModal(modals.firstModal, 'formAjoutProjet');
 });
 
-// Ouv 2 eme modale
-openFirstModalBtn.addEventListener("click", () => {
-  secondModal.classList.remove("hide");
+buttons.closeSecondModalBtn.addEventListener("click", () => {
+  closeModal(modals.secondModal, 'formAjoutProjet');
+  closeModal(modals.firstModal);
 });
 
-// Ferm de la 2 eme modale avec le bouton close
-closeSecondModalBtn.addEventListener("click", () => {
-  secondModal.classList.add("hide");
-  firstModal.classList.add("hide");
-});
-
-// Retour à la première modale avec la flèche
-backArrowBtn.addEventListener("click", () => {
-  secondModal.classList.add("hide");
-  firstModal.classList.remove("hide");
+buttons.backArrowBtn.addEventListener("click", () => {
+  closeModal(modals.secondModal);
+  openModal(modals.firstModal);
 });
 
 // Ferm des modale lors du clic à l'extérieur
-[firstModal, secondModal].forEach(modal => {
+[modals.firstModal, modals.secondModal].forEach(modal => {
   modal.addEventListener("click", (e) => {
     if (e.target === modal) {
-      modal.classList.add("hide");
-      firstModal.classList.add("hide"); 
+      closeModal(modal, 'formAjoutProjet');
     }
   });
 });

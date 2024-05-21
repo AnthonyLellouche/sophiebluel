@@ -1,4 +1,5 @@
 import { chargerProjets, chargerCategories } from './work.js';
+import { openModal, closeModal } from './modal.js';
 
 document.addEventListener("DOMContentLoaded", () => {
   toggleLoginLogout();
@@ -6,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     chargerProjets();
     chargerCategories();
   }
+  setUpModalEventListeners();
 });
 
 // co/déconnexion
@@ -20,63 +22,41 @@ function toggleLoginLogout() {
   document.getElementById('filter').style.display = isAuth ? 'none' : 'flex';
 }
 
-const logoutLink = document.getElementById('logout-link');
-logoutLink.addEventListener('click', (event) => {
+document.getElementById('logout-link').addEventListener('click', (event) => {
   event.preventDefault();
   sessionStorage.removeItem('authToken');
   window.location.href = 'index.html';
 });
 
-// Gestion des modale
-const modal = document.querySelector(".modal-overlay");
-const newModal = document.querySelector(".new-modal");
+function setUpModalEventListeners() {
+  const modal = document.querySelector(".modal-overlay");
+  const newModal = document.querySelector(".new-modal");
 
-// Fonction pour ouvrir une modal specifique
-function openModal(modal) {
-  modal.classList.remove("hide");
+  document.querySelector("#modifier").addEventListener("click", () => {
+    openModal(modal);
+    chargerProjets("Tous", ".modal-gallery", false, true);
+  });
+
+  document.querySelector("#openModalAjout").addEventListener("click", () => {
+    openModal(newModal);
+  });
+
+  modal.addEventListener("click", (e) => {
+    if (e.target.classList.contains("modal-overlay")) closeModal(modal, 'formAjoutProjet');
+  });
+
+  newModal.addEventListener("click", (e) => {
+    if (e.target.classList.contains("modal-overlay")) closeModal(newModal, 'formAjoutProjet');
+  });
+
+  document.querySelector(".close-modal-btn").addEventListener("click", () => closeModal(modal, 'formAjoutProjet'));
+  document.querySelector(".new-modal .close-modal-btn").addEventListener("click", () => {
+    closeModal(newModal, 'formAjoutProjet');
+    closeModal(modal);
+  });
+
+  document.querySelector(".arrow-modal-btn").addEventListener("click", () => {
+    closeModal(newModal);
+    openModal(modal);
+  });
 }
-
-//fonction pour fermer une modale specfifique et reinitialisation form
-function closeModal(modal, resetFormId = null) {
-  modal.classList.add("hide");
-  if (resetFormId) {
-    resetForm(resetFormId);
-  }
-}
-
-function resetForm(formId) {
-  const form = document.getElementById(formId);
-  form.reset();
-  document.getElementById('preview-image').style.display = 'none';
-  document.querySelector('.fa-regular.fa-image').classList.remove('hidden');
-  document.querySelector('.btnAjout').classList.remove('hidden');
-  document.querySelector('.labelFormat').classList.remove('hidden');
-}
-
-document.querySelector("#modifier").addEventListener("click", () => {
-  openModal(modal);
-  chargerProjets("Tous", ".modal-gallery", false, true);
-});
-
-document.querySelector("#openModalAjout").addEventListener("click", () => {
-  openModal(newModal);
-});
-
-modal.addEventListener("click", (e) => {
-  if (e.target.classList.contains("modal-overlay")) closeModal(modal, 'formAjoutProjet');
-});
-newModal.addEventListener("click", (e) => {
-  if (e.target.classList.contains("modal-overlay")) closeModal(newModal, 'formAjoutProjet');
-});
-
-document.querySelector(".close-modal-btn").addEventListener("click", () => closeModal(modal, 'formAjoutProjet'));
-document.querySelector(".new-modal .close-modal-btn").addEventListener("click", () => {
-  closeModal(newModal, 'formAjoutProjet');
-  closeModal(modal);
-});
-
-document.querySelector(".arrow-modal-btn").addEventListener("click", () => {
-  closeModal(newModal);
-  openModal(modal);
-});
-
