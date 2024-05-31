@@ -53,11 +53,3 @@ buttons.backArrowBtn.addEventListener("click", () => {
   openModal(modals.firstModal);
 });
 
-// Ferm des modale lors du clic à l'extérieur
-[modals.firstModal, modals.secondModal].forEach(modal => {
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) {
-      closeModal(modal, 'formAjoutProjet');
-    }
-  });
-});

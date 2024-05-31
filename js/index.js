@@ -28,6 +28,7 @@ document.getElementById('logout-link').addEventListener('click', (event) => {
   window.location.href = 'index.html';
 });
 
+// modal
 function setUpModalEventListeners() {
   const modal = document.querySelector(".modal-overlay");
   const newModal = document.querySelector(".new-modal");
